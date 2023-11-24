@@ -39,11 +39,16 @@ let team5 = { Name = "Chicago Bulls"; Coach = coach5; Stats = stats5 }
 // list of teams
 let teams = [team1; team2; team3; team4; team5]
 
-// Filtering the list
-// Filter successful teams
-let successfulTeams = List.filter (fun team -> team.Stats.Wins > team.Stats.Losses) teams
+/ Mapping the list
+// function to calculate success percentage
+let calculateSuccessPercentage (team : Team) =
+    let totalGames = float (team.Stats.Wins + team.Stats.Losses)
+    let successPercentage = (float team.Stats.Wins / totalGames) * 100.0
+    successPercentage
 
-// Accessing information about successful teams
-for team in successfulTeams do
-    printfn "Successful Team: %s, Wins: %d, Losses: %d"
-        team.Name team.Stats.Wins team.Stats.Losses
+// Using List.map to calculate success percentage for each team
+let successPercentages = List.map calculateSuccessPercentage teams
+
+// Accessing information about success percentages
+for (team, successPercentage) in List.zip teams successPercentages do
+    printfn "Team: %s, Success Percentage: %.2f%%" team.Name successPercentage
