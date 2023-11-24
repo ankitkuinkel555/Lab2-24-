@@ -39,7 +39,11 @@ let team5 = { Name = "Chicago Bulls"; Coach = coach5; Stats = stats5 }
 // list of teams
 let teams = [team1; team2; team3; team4; team5]
 
-// Accessing team information
-for team in teams do
-    printfn "Team: %s, Coach: %s, FormerPlayer: %b, Wins: %d, Losses: %d"
-        team.Name team.Coach.Name team.Coach.FormerPlayer team.Stats.Wins team.Stats.Losses
+// Filtering the list
+// Filter successful teams
+let successfulTeams = List.filter (fun team -> team.Stats.Wins > team.Stats.Losses) teams
+
+// Accessing information about successful teams
+for team in successfulTeams do
+    printfn "Successful Team: %s, Wins: %d, Losses: %d"
+        team.Name team.Stats.Wins team.Stats.Losses
