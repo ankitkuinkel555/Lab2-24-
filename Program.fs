@@ -1,54 +1,52 @@
-﻿// Creating a list of 5 teams
-type Coach = {
-    Name : string
-    FormerPlayer : bool
-}
+﻿// Define the Cuisine discriminated union
+type Cuisine =
+    | Korean
+    | Turkish
 
-type Stats = {
-    Wins : int
-    Losses : int
-}
+// Define the MovieType discriminated union
+type MovieType =
+    | Regular
+    | IMAX
+    | DBOX
+    | RegularWithSnacks
+    | IMAXWithSnacks
+    | DBOXWithSnacks
 
-type Team = {
-    Name : string
-    Coach : Coach
-    Stats : Stats
-}
+// Define the Activity discriminated union
+type Activity =
+    | BoardGame
+    | Chill
+    | Movie of MovieType
+    | Restaurant of Cuisine
+    | LongDrive of int * float
 
-// coaches
-let coach1 = { Name = "Quin Snyder"; FormerPlayer = false }
-let coach2 = { Name = "Joe Mazzulla"; FormerPlayer = true }
-let coach3 = { Name = "Jacque Vaughn"; FormerPlayer = true }
-let coach4 = { Name = "Steve Clifford"; FormerPlayer = false }
-let coach5 = { Name = "Billy Donovan"; FormerPlayer = false }
+// suppose
+let boardGameActivity = BoardGame
+let chillActivity = Chill
+let movieActivity = Movie Regular
+let restaurantActivity = Restaurant Korean
+let longDriveActivity = LongDrive (50, 0.1) // 50 km distance, 0.1 CAD fuel cost per km
 
-// stats
-let stats1 = { Wins = 2891; Losses = 2964 }
-let stats2 = { Wins = 3570; Losses = 2462 }
-let stats3 = { Wins = 1622; Losses = 2164 }
-let stats4 = { Wins = 1153; Losses = 1478 }
-let stats5 = { Wins = 2344; Losses = 2254 }
 
-// teams
-let team1 = { Name = "Atlanta Hawks"; Coach = coach1; Stats = stats1 }
-let team2 = { Name = "Boston Celtics"; Coach = coach2; Stats = stats2 }
-let team3 = { Name = "Brooklyn Nets"; Coach = coach3; Stats = stats3 }
-let team4 = { Name = "Charlotte Hornets"; Coach = coach4; Stats = stats4 }
-let team5 = { Name = "Chicago Bulls"; Coach = coach5; Stats = stats5 }
+// Define the calculateBudget function
+let calculateBudget activity =
+    match activity with
+    | BoardGame | Chill -> 0.0
+    | Movie movieType ->
+        match movieType with
+        | Regular -> 12.0
+        | IMAX -> 17.0
+        | DBOX -> 20.0
+        | RegularWithSnacks | IMAXWithSnacks | DBOXWithSnacks -> 12.0 + 5.0
+    | Restaurant cuisine ->
+        match cuisine with
+        | Korean -> 70.0
+        | Turkish -> 65.0
+    | LongDrive (distance, fuelCostPerKm) -> float distance * fuelCostPerKm
 
-// list of teams
-let teams = [team1; team2; team3; team4; team5]
-
-/ Mapping the list
-// function to calculate success percentage
-let calculateSuccessPercentage (team : Team) =
-    let totalGames = float (team.Stats.Wins + team.Stats.Losses)
-    let successPercentage = (float team.Stats.Wins / totalGames) * 100.0
-    successPercentage
-
-// Using List.map to calculate success percentage for each team
-let successPercentages = List.map calculateSuccessPercentage teams
-
-// Accessing information about success percentages
-for (team, successPercentage) in List.zip teams successPercentages do
-    printfn "Team: %s, Success Percentage: %.2f%%" team.Name successPercentage
+// Calculate and print the budget for each activity
+printfn "Board Game: %.2f CAD" (calculateBudget boardGameActivity)
+printfn "Chill: %.2f CAD" (calculateBudget chillActivity)
+printfn "Movie: %.2f CAD" (calculateBudget movieActivity)
+printfn "Restaurant: %.2f CAD" (calculateBudget restaurantActivity)
+printfn "Long Drive: %.2f CAD" (calculateBudget longDriveActivity)
